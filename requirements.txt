@@ -1,0 +1,12 @@
+opencv-python
+Cython
+numba
+progress
+matplotlib
+easydict
+scipy
+pyquaternion
+pyyaml
+motmetrics==1.2.0
+nuscenes-devkit==1.1.2
+scikit-learn==0.21.0

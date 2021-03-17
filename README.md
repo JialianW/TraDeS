@@ -1,9 +1,9 @@
 # Track to Detect and Segment: An Online Multi-Object Tracker (CVPR 2021)
 
 [comment]: <> (> [**Track to Detect and Segment: An Online Multi-Object Tracker**]&#40;http://arxiv.org/abs/2004.01177&#41;,            )
-[**Track to Detect and Segment: An Online Multi-Object Tracker**](https://jialianwu.com/projects/TraDeS.html)  
+[**Track to Detect and Segment: An Online Multi-Object Tracker**](https://arxiv.org/abs/2103.08808)  
 Jialian Wu, Jiale Cao, Liangchen Song, Yu Wang, Ming Yang, Junsong Yuan        
-In CVPR, 2021. [[Paper]](https://jialianwu.com/projects/TraDeS.html) [[Project Page]](https://jialianwu.com/projects/TraDeS.html) [[Demo (YouTube)]](https://www.youtube.com/watch?v=oGNtSFHRZJAl)
+In CVPR, 2021. [[Paper]](https://arxiv.org/pdf/2103.08808.pdf) [[Project Page]](https://jialianwu.com/projects/TraDeS.html) [[Demo (YouTube)]](https://www.youtube.com/watch?v=oGNtSFHRZJAl)
 
 Many thanks to [CenterTrack](https://github.com/xingyizhou/CenterTrack) authors for their great framework!
 

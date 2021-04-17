@@ -401,7 +401,6 @@ class Detector(object):
         output['tracking'] = output['tracking_offset']
         self.inference_feats.appendleft(current_feat)
         while len(self.inference_feats) < (self.opt.clip_len-1):
-          print('adding!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
           self.inference_feats.appendleft(current_feat)
       else:
         output, current_feat = self.model(images, pre_images, pre_hms)

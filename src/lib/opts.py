@@ -105,6 +105,7 @@ class opts(object):
     self.parser.add_argument('--clip_len', type=int, default=1, help='number of images used in trades'
                                                                      'including the current image')
     self.parser.add_argument('--no_repeat', action='store_true', default=True)
+    self.parser.add_argument('--seg', action='store_true', default=True)
     self.parser.add_argument('--deform_kernel_size', type=int, default=3)
     self.parser.add_argument('--trades', action='store_true', help='Track to Detect and Segment:'
                                                                    'An Online Multi Object Tracker')

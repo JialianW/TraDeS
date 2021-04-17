@@ -3,7 +3,7 @@
 [comment]: <> (> [**Track to Detect and Segment: An Online Multi-Object Tracker**]&#40;http://arxiv.org/abs/2004.01177&#41;,            )
 [**Track to Detect and Segment: An Online Multi-Object Tracker**](https://arxiv.org/abs/2103.08808)  
 Jialian Wu, Jiale Cao, Liangchen Song, Yu Wang, Ming Yang, Junsong Yuan        
-In CVPR, 2021. [[Paper]](https://arxiv.org/pdf/2103.08808.pdf) [[Project Page]](https://jialianwu.com/projects/TraDeS.html) [[Demo (YouTube)]](https://www.youtube.com/watch?v=oGNtSFHRZJAl)
+In CVPR, 2021. [[Paper]](https://arxiv.org/pdf/2103.08808.pdf) [[Project Page]](https://jialianwu.com/projects/TraDeS.html) [Demo [(YouTube)](https://www.youtube.com/watch?v=oGNtSFHRZJAl) [(bilibili)](https://www.bilibili.com/video/BV12U4y1p7wg)]
 
 Many thanks to [CenterTrack](https://github.com/xingyizhou/CenterTrack) authors for their great framework!
 

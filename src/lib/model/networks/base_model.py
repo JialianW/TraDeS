@@ -224,7 +224,7 @@ class BaseModel(nn.Module):
         w_c = int(w_f / 2)
 
         prop_feats.append(feat_cur)
-        embedding = self.embedconv(feat_cur)  # (B, 128, H, W) -> (B, 128, H*W)
+        embedding = self.embedconv(feat_cur)
         embedding_prime = self.maxpool_stride2(embedding)
         # (B, 128, H, W) -> (B, H*W, 128):
         embedding_prime = embedding_prime.view(batch_size, self.embed_dim, -1).permute(0, 2, 1)
@@ -259,7 +259,7 @@ class BaseModel(nn.Module):
         return [enhanced_feat], embedding, tracking_offset_output, [h_max_for_loss, w_max_for_loss], h_max_for_loss_aux, w_max_for_loss_aux
 
     def CVA(self, embedding_prime, feat_prev, batch_size, h_c, w_c):
-        embedding_prev = self.embedconv(feat_prev)  # (B, 128, H, W) -> (B, 128, H*W)
+        embedding_prev = self.embedconv(feat_prev)
         _embedding_prev = self.maxpool_stride2(embedding_prev)
         _embedding_prev = _embedding_prev.view(batch_size, self.embed_dim, -1)
         # Cost Volume Map

@@ -127,6 +127,37 @@ def generic_decode(output, K=100, opt=None):
                         xs + wh[..., 0:1] / 2, 
                         ys + wh[..., 1:2] / 2], dim=2)
     ret['bboxes'] = bboxes
+
+  if opt.seg:
+    seg_feat = output['seg_feat']
+    conv_weight = output['conv_weight']
+    feat_channel = seg_feat.size(1)
+    h, w = seg_feat.size(-2), seg_feat.size(-1)
+    mask = torch.zeros((batch, K, h, w)).to(device=seg_feat.device)
+    x_range = torch.arange(w).float().to(device=seg_feat.device)
+    y_range = torch.arange(h).float().to(device=seg_feat.device)
+    y_grid, x_grid = torch.meshgrid([y_range, x_range])
+    weight = _tranpose_and_gather_feat(conv_weight, inds)
+    for i in range(batch):
+      conv1w, conv1b, conv2w, conv2b, conv3w, conv3b = \
+        torch.split(weight[i], [(feat_channel + 2) * feat_channel, feat_channel,
+                                feat_channel ** 2, feat_channel,
+                                feat_channel, 1], dim=-1)
+      y_rel_coord = (y_grid[None, None] - ys[i].unsqueeze(-1).unsqueeze(-1).float()) / 128.
+      x_rel_coord = (x_grid[None, None] - xs[i].unsqueeze(-1).unsqueeze(-1).float()) / 128.
+      feat = seg_feat[i][None].repeat([K, 1, 1, 1])
+      feat = torch.cat([feat, x_rel_coord, y_rel_coord], dim=1).view(1, -1, h, w)
+      conv1w = conv1w.contiguous().view(-1, feat_channel + 2, 1, 1)
+      conv1b = conv1b.contiguous().flatten()
+      feat = F.conv2d(feat, conv1w, conv1b, groups=K).relu()
+      conv2w = conv2w.contiguous().view(-1, feat_channel, 1, 1)
+      conv2b = conv2b.contiguous().flatten()
+      feat = F.conv2d(feat, conv2w, conv2b, groups=K).relu()
+      conv3w = conv3w.contiguous().view(-1, feat_channel, 1, 1)
+      conv3b = conv3b.contiguous().flatten()
+      feat = F.conv2d(feat, conv3w, conv3b, groups=K).sigmoid().squeeze()
+      mask[i] = feat
+    ret['pred_mask'] = mask
  
   if 'ltrb' in output:
     ltrb = output['ltrb']

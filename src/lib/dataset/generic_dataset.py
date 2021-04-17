@@ -163,10 +163,10 @@ class GenericDataset(data.Dataset):
 
 
     ### init samples
-    self._init_ret(ret, gt_det)
-    calib = self._get_calib(img_info, width, height)
-    
     num_objs = min(len(anns), self.max_objs)
+    self._init_ret(ret, gt_det, num_objs)
+    calib = self._get_calib(img_info, width, height)
+
     for k in range(num_objs):
       ann = anns[k]
       cls_id = int(self.cat_ids[ann['category_id']])
@@ -175,12 +175,24 @@ class GenericDataset(data.Dataset):
       bbox, bbox_amodal = self._get_bbox_output(
         ann['bbox'], trans_output, height, width)
 
+      if self.opt.seg:
+        instance_mask = self.coco.annToMask(ann)
+        if flipped:
+          instance_mask = instance_mask[:, ::-1]
+
+        instance_mask = cv2.warpAffine(instance_mask, trans_output,
+                                   (self.opt.output_w, self.opt.output_h),
+                                   flags=cv2.INTER_LINEAR)
+        instance_mask = instance_mask.astype(np.float32)
+      else:
+        instance_mask = None
+
       if cls_id <= 0 or ('iscrowd' in ann and ann['iscrowd'] > 0):
         self._mask_ignore_or_crowd(ret, cls_id, bbox)
         continue
       self._add_instance(
         ret, gt_det, k, cls_id, bbox, bbox_amodal, ann, trans_output, aug_s, 
-        calib, pre_cts, track_ids, pre_cts_wo_disturb, cost_volume_track_ids, cost_volume_pre_cts_wo_disturb)
+        calib, pre_cts, track_ids, pre_cts_wo_disturb, cost_volume_track_ids, cost_volume_pre_cts_wo_disturb, instance_mask)
 
     if self.opt.debug > 0:
       gt_det = self._format_gt_det(gt_det)
@@ -420,8 +432,11 @@ class GenericDataset(data.Dataset):
     return inp
 
 
-  def _init_ret(self, ret, gt_det):
+  def _init_ret(self, ret, gt_det, num_objs):
     max_objs = self.max_objs * self.opt.dense_reg
+    ret['num_obj'] = np.zeros((1), dtype=np.int64)
+    ret['num_obj'] = 1 if num_objs == 0 else num_objs
+    ret['instance_mask'] = np.zeros((max_objs, self.opt.output_h, self.opt.output_w), dtype=np.float32)
     ret['hm'] = np.zeros(
       (self.opt.num_classes, self.opt.output_h, self.opt.output_w), 
       np.float32)
@@ -531,10 +546,13 @@ class GenericDataset(data.Dataset):
   def _add_instance(
     self, ret, gt_det, k, cls_id, bbox, bbox_amodal, ann, trans_output,
     aug_s, calib, pre_cts=None, track_ids=None, pre_cts_wo_disturb=None,
-    cost_volume_track_ids=None, cost_volume_pre_cts_wo_disturb=None):
+    cost_volume_track_ids=None, cost_volume_pre_cts_wo_disturb=None, instance_mask=None):
     h, w = bbox[3] - bbox[1], bbox[2] - bbox[0]
     if h <= 0 or w <= 0:
       return
+
+    if self.opt.seg:
+      ret['instance_mask'][k] = instance_mask
 
     if self.opt.trades:
       if ann['track_id'] in track_ids:

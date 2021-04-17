@@ -7,6 +7,7 @@ import cv2
 from .image import transform_preds_with_trans, get_affine_transform
 from .ddd_utils import ddd2locrot, comput_corners_3d
 from .ddd_utils import project_to_image, rot_y2alpha
+from pycocotools import mask as mask_utils
 
 def get_alpha(rot):
   # output: (B, 8) [bin1_cls[0], bin1_cls[1], bin1_sin, bin1_cos, 
@@ -32,6 +33,8 @@ def generic_post_process(
       det_boxes = dets['bboxes'][i].copy()
       keep = []
 
+    if opt.seg:
+      segmap = np.zeros((height, width), dtype=np.uint8)
     for j in range(len(dets['scores'][i])):
       if dets['scores'][i][j] < opt.out_thresh:
         break
@@ -61,6 +64,12 @@ def generic_post_process(
             if np.max(overlap) > opt.box_nms:
               continue
           keep.append(j)
+
+      if 'pred_mask' in dets:
+        pred_mask = cv2.warpAffine(dets['pred_mask'][i][j], trans, (width, height), flags=cv2.INTER_CUBIC) > 0.5  # time consuming
+        pred_mask = np.asfortranarray(pred_mask).astype(np.uint8)
+        item['pred_mask'] = mask_utils.encode(pred_mask)
+        item['pred_mask']['counts'] = item['pred_mask']['counts'].decode("utf-8")
 
       if 'hps' in dets:
         pts = transform_preds_with_trans(

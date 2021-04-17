@@ -77,7 +77,7 @@ According to the current website version, the data is under Full dataset (v1.0) 
 
 - Run `python tools/convert_nuScenes.py` to convert the annotation into COCO format. It will create `train.json`, `val.json`, `test.json` under `data/nuscenes/annotations`. nuScenes API is required for running the data preprocessing.
 
-## CrowdHuman Datset
+## CrowdHuman Dataset
 
 CrowdHuman is used for pretraining the MOT model. Only the training set is used.
 
@@ -98,6 +98,25 @@ CrowdHuman is used for pretraining the MOT model. Only the training set is used.
   ~~~
 
 - Run `python tools/convert_crowdhuman_to_coco.py` to convert the annotation into COCO format. It will create `train.json`, `val.json` under `data/crowdhuman/annotations`.
+
+## Youtube-VIS Dataset
+
+- Download the dataset from [website](https://competitions.codalab.org/competitions/20128#participate-get_data).
+
+- Converted annotations: [train.json](https://drive.google.com/file/d/1cKIwLkUfmVMUWVUiRY3inQ8W6AO4ETLb/view?usp=sharing) and [val.json](https://drive.google.com/file/d/1iquYUDok2Eksnb-CwadqY22V7G8Iz8N3/view?usp=sharing).
+
+-- coco pretrained model: [coco_seg.pth](https://drive.google.com/file/d/1zhTkO2KFVB72jgqiuaZsKN8S0ax7Zf19/view?usp=sharing)
+
+  ~~~
+  ${TraDeS_ROOT}
+  |-- data
+  `-- |-- youtube_vis
+      |-- |-- train/
+      |-- |-- val/
+      |-- |-- annotations/
+      |-- |-- |-- train.json
+      |-- |-- |-- val.json
+  ~~~
 
 
 
@@ -130,4 +149,12 @@ Please cite the corresponding references if you use the datasets.
   booktitle={CVPR},
   year={2020}
   }
+  
+  @inproceedings{yang2019video,
+  title={Video instance segmentation},
+  author={Yang, Linjie and Fan, Yuchen and Xu, Ning},
+  booktitle={Proceedings of the IEEE/CVF International Conference on Computer Vision},
+  pages={5188--5197},
+  year={2019}
+}
 ~~~

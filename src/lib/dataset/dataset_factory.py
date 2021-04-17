@@ -15,6 +15,7 @@ from .datasets.mot import MOT
 from .datasets.nuscenes import nuScenes
 from .datasets.crowdhuman import CrowdHuman
 from .datasets.kitti_tracking import KITTITracking
+from .datasets.youtube_vis import youtube_vis
 from .datasets.custom_dataset import CustomDataset
 
 dataset_factory = {
@@ -26,6 +27,7 @@ dataset_factory = {
   'nuscenes': nuScenes,
   'crowdhuman': CrowdHuman,
   'kitti_tracking': KITTITracking,
+  'youtube_vis': youtube_vis
 }
 
 

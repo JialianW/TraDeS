@@ -127,6 +127,20 @@ class BaseModel(nn.Module):
                       convs[1], nn.ReLU(inplace=True),
                       convs[2], nn.ReLU(inplace=True),
                       convs[3], nn.ReLU(inplace=True), out)
+                if head == "seg_feat":
+                    fc = nn.Sequential(
+                    nn.Conv2d(last_channel, head_conv[0],
+                              kernel_size=3, padding=1, bias=False),
+                    nn.BatchNorm2d(head_conv[0]),
+                    nn.ReLU(inplace=True),
+                    nn.Conv2d(head_conv[0], head_conv[0],
+                              kernel_size=3, padding=1, bias=False),
+                    nn.BatchNorm2d(head_conv[0]),
+                    nn.ReLU(inplace=True),
+                    nn.Conv2d(head_conv[0], classes,
+                              kernel_size=1, padding=0, bias=False),
+                    nn.BatchNorm2d(classes),
+                    nn.ReLU(inplace=True))
                 if 'hm' in head:
                     fc[-1].bias.data.fill_(opt.prior_bias)
                 else:

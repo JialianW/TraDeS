@@ -62,9 +62,13 @@ class Tracker(object):
     dist = (((tracks.reshape(1, -1, 2) - \
               dets.reshape(-1, 1, 2)) ** 2).sum(axis=2)) # N x M
 
-    invalid = ((dist > track_size.reshape(1, M)) + \
-      (dist > item_size.reshape(N, 1)) + \
-      (item_cat.reshape(N, 1) != track_cat.reshape(1, M)) + (box_ious < self.opt.overlap_thresh)) > 0
+    if self.opt.dataset == 'youtube_vis':
+      invalid = ((dist > track_size.reshape(1, M)) + \
+                 (dist > item_size.reshape(N, 1)) + (box_ious < self.opt.overlap_thresh)) > 0
+    else:
+      invalid = ((dist > track_size.reshape(1, M)) + \
+        (dist > item_size.reshape(N, 1)) + \
+        (item_cat.reshape(N, 1) != track_cat.reshape(1, M)) + (box_ious < self.opt.overlap_thresh)) > 0
     dist = dist + invalid * 1e18
     
     if self.opt.hungarian:
@@ -169,6 +173,8 @@ class Tracker(object):
           bbox[2] + v[0], bbox[3] + v[1]]
         track['ct'] = [ct[0] + v[0], ct[1] + v[1]]
         ret.append(track)
+    for r_ in ret:
+      del r_['embedding']
     self.tracks = ret
     return ret
 

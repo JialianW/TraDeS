@@ -95,10 +95,6 @@ We follow [CenterTrack](https://arxiv.org/pdf/2004.01177.pdf) which uses CrowdHu
 
 The trained model is available at [CrowdHuman model](https://drive.google.com/file/d/1pljgwSecg50OhCTc2yCEhEBY3AwvPFlp/view?usp=sharing).
 
-## *Instance Segmentation Tracking*
-
-Code will be released later on after we clean it up. Our implementation is based on [here](https://github.com/CaoWGG/CenterNet-CondInst).
-
 
 ## Citation
 If you find it useful in your research, please consider citing our paper as follows:

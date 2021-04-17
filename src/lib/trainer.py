@@ -11,7 +11,7 @@ from model.data_parallel import DataParallel
 from utils.utils import AverageMeter
 from model.utils import _tranpose_and_gather_feat
 
-from model.losses import FastFocalLoss, RegWeightedL1Loss, CostVolumeLoss1D
+from model.losses import FastFocalLoss, RegWeightedL1Loss, CostVolumeLoss1D, DiceLoss
 from model.losses import BinRotLoss, WeightedBCELoss
 from model.decode import generic_decode
 from model.utils import _sigmoid, flip_tensor, flip_lr_off, flip_lr
@@ -31,6 +31,8 @@ class GenericLoss(torch.nn.Module):
     self.opt = opt
     if opt.trades:
       self.crit_cost_volume_1d = CostVolumeLoss1D()
+    if opt.seg:
+      self.crit_mask = DiceLoss(opt.seg_feat_channel)
 
   def _sigmoid_output(self, output):
     if 'hm' in output:
@@ -43,9 +45,15 @@ class GenericLoss(torch.nn.Module):
 
   def forward(self, outputs, batch):
     opt = self.opt
-    losses = {head: 0 for head in opt.heads}
+    losses = {}
+    for head in opt.heads:
+      if 'conv_weight' in head or 'seg_feat' in head:
+        continue
+      losses[head] = 0
     if opt.trades:
       losses['cost_volume'] = 0
+    if opt.seg:
+      losses['mask_loss'] = 0
 
     for s in range(opt.num_stacks):
       output = outputs[s]
@@ -62,6 +70,10 @@ class GenericLoss(torch.nn.Module):
                                                             batch['w_hm_down_prev{}'.format(temporal_id)], batch['w_ind_down_prev{}'.format(temporal_id)],
                                                             batch['mask_down_prev{}'.format(temporal_id)], batch['cat_down_prev{}'.format(temporal_id)])
         losses['cost_volume'] = losses['cost_volume']*1.0 / (opt.clip_len - 1)
+
+      if opt.seg:
+        losses['mask_loss'] += self.crit_mask(output['seg_feat'], output['conv_weight'],
+                                            batch['mask'], batch['ind'], batch['instance_mask'], batch['num_obj'])
 
       if 'hm' in output:
         losses['hm'] += self.crit(
@@ -99,10 +111,14 @@ class GenericLoss(torch.nn.Module):
 
     losses['tot'] = 0
     for head in opt.heads:
+      if 'conv_weight' in head or 'seg_feat' in head:
+        continue
       losses['tot'] += opt.weights[head] * losses[head]
 
     if opt.trades:
       losses['tot'] += 0.5 * losses['cost_volume']
+    if opt.seg:
+      losses['tot'] += 1.0 * losses['mask_loss']
 
     return losses['tot'], losses
 
@@ -215,6 +231,7 @@ class Trainer(object):
       'ltrb_amodal', 'tracking', 'nuscenes_att', 'velocity']
     loss_states = ['tot'] + [k for k in loss_order if k in opt.heads]
     loss_states = loss_states + ['cost_volume'] if opt.trades else loss_states
+    loss_states = loss_states + ['mask_loss'] if opt.seg else loss_states
     loss = GenericLoss(opt)
     return loss_states, loss
 

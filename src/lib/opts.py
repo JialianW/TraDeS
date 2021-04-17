@@ -106,6 +106,7 @@ class opts(object):
                                                                      'including the current image')
     self.parser.add_argument('--no_repeat', action='store_true', default=True)
     self.parser.add_argument('--seg', action='store_true', default=True)
+    self.parser.add_argument('--seg_feat_channel', default=8, type=int, help='.')
     self.parser.add_argument('--deform_kernel_size', type=int, default=3)
     self.parser.add_argument('--trades', action='store_true', help='Track to Detect and Segment:'
                                                                    'An Online Multi Object Tracker')
@@ -220,7 +221,7 @@ class opts(object):
     self.parser.add_argument('--fp_disturb', type=float, default=0)
     self.parser.add_argument('--pre_thresh', type=float, default=-1)
     self.parser.add_argument('--track_thresh', type=float, default=0.3)
-    self.parser.add_argument('--new_thresh', type=float, default=0.3)
+    self.parser.add_argument('--new_thresh', type=float, default=0.0)
     self.parser.add_argument('--max_frame_dist', type=int, default=3)
     self.parser.add_argument('--ltrb_amodal', action='store_true')
     self.parser.add_argument('--ltrb_amodal_weight', type=float, default=0.1)
@@ -382,6 +383,9 @@ class opts(object):
 
     if opt.embedding:
         opt.heads.update({'embedding': 128})
+    if opt.seg:
+        opt.heads.update({'conv_weight': 2*opt.seg_feat_channel**2 + 5*opt.seg_feat_channel + 1})
+        opt.heads.update({'seg_feat': opt.seg_feat_channel})
     weight_dict = {'hm': opt.hm_weight, 'wh': opt.wh_weight,
                    'reg': opt.off_weight, 'hps': opt.hp_weight,
                    'hm_hp': opt.hm_hp_weight, 'hp_offset': opt.off_weight,
@@ -393,10 +397,14 @@ class opts(object):
                    'ltrb_amodal': opt.ltrb_amodal_weight,
                    'nuscenes_att': opt.nuscenes_att_weight,
                    'velocity': opt.velocity_weight,
-                   'embedding': 1.0}
+                   'embedding': 1.0,
+                   'conv_weight': 1.0,
+                   'seg_feat':1.0}
     opt.weights = {head: weight_dict[head] for head in opt.heads}
     if opt.trades:
         opt.weights['cost_volume'] = 1.0
+    if opt.seg:
+        opt.weights['mask_loss'] = 1.0
     for head in opt.weights:
       if opt.weights[head] == 0:
         del opt.heads[head]

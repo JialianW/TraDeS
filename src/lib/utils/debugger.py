@@ -154,6 +154,16 @@ class Debugger(object):
         cv2.putText(self.imgs[img_id], txt, (bbox[0], bbox[1] - thickness - 1), 
                     font, fontsize, (0, 0, 0), thickness=1, lineType=cv2.LINE_AA)
 
+  def add_coco_seg(self, seg, tracking_id, img_id='default',conf=1):
+      if self.opt.show_track_color:
+          track_id = int(conf)
+          if not (track_id in self.track_color):
+              self.track_color[track_id] = self._get_rand_color()
+          color = self.track_color[track_id]
+          color = np.array([color])
+      seg = seg > 0.5
+      self.imgs[img_id][seg] = self.imgs[img_id][seg]*0.2 + color*0.8
+
   def add_tracking_id(self, ct, tracking_id, img_id='default'):
     txt = '{}'.format(tracking_id)
     fontsize = 0.5

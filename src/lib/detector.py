@@ -22,6 +22,7 @@ from dataset.dataset_factory import get_dataset
 from model.utils import _nms
 from model.utils import _tranpose_and_gather_feat
 from collections import deque
+from pycocotools import mask as mask_utils
 
 class Detector(object):
   def __init__(self, opt):
@@ -152,6 +153,7 @@ class Detector(object):
       public_det = meta['cur_dets'] if self.opt.public_det else None
       results = self.tracker.step(results, public_det)
       self.pre_images = images
+
 
     tracking_time = time.time()
     track_time += tracking_time - end_time
@@ -487,6 +489,9 @@ class Detector(object):
 
           debugger.add_coco_bbox(
             item['bbox'], item['class'] - 1, sc, img_id='generic')
+          if pred_mask in item:
+            mask = mask_utils.decode(item['pred_mask'])
+            debugger.add_coco_seg(mask, item['tracking_id'], img_id='generic', conf=sc)
         # if 'tracking' in item:
         #   debugger.add_arrow(item['ct'], item['tracking'], img_id='generic')
         

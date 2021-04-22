@@ -14,7 +14,7 @@ Many thanks to [CenterTrack](https://github.com/xingyizhou/CenterTrack) authors 
 Please refer to [INSTALL.md](readme/INSTALL.md) for installation instructions.
 
 ## Run Demo
-We reuse the demo script from [CenterTrack](https://github.com/xingyizhou/CenterTrack). Before run the demo, first download our trained models:
+Before run the demo, first download our trained models:
 [CrowdHuman model](https://drive.google.com/file/d/1pljgwSecg50OhCTc2yCEhEBY3AwvPFlp/view?usp=sharing) (2D tracking),
 [MOT model](https://drive.google.com/file/d/18DQi6LqFuO7_2QObvZSNK2y_F8yXT17p/view?usp=sharing) (2D tracking) or [nuScenes model](https://drive.google.com/file/d/1PHcDPIvb6owVuMZKR_YieyYN12IhbQLl/view?usp=sharing) (3D tracking). 
 Then, put the models in `TraDeS_ROOT/models/` and `cd TraDeS_ROOT/src/`. **The demo result will be saved as a video in `TraDeS_ROOT/results/`.**

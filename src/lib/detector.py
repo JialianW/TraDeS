@@ -489,7 +489,7 @@ class Detector(object):
 
           debugger.add_coco_bbox(
             item['bbox'], item['class'] - 1, sc, img_id='generic')
-          if pred_mask in item:
+          if ('pred_mask' in item):
             mask = mask_utils.decode(item['pred_mask'])
             debugger.add_coco_seg(mask, item['tracking_id'], img_id='generic', conf=sc)
         # if 'tracking' in item:

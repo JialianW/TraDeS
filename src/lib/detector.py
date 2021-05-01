@@ -344,52 +344,6 @@ class Detector(object):
 
     return output
 
-  def clip_feat(self, feat, ct_y, ct_x, r, map_shape):
-    feat = feat[:, 0 - (ct_y - r):, :]
-    feat = feat[:, :, 0 - (ct_x - r):]
-    feat = feat[:, :-(ct_y + r + 1 - map_shape[2]), :]
-    feat = feat[:, :, :-(ct_x + r + 1 - map_shape[3])]
-
-    return feat
-
-  def propagate_det2(self, dets, meta, with_hm=True):
-    '''
-    Render input heatmap from previous trackings.
-    '''
-    trans_input, trans_output = meta['trans_input'], meta['trans_output']
-    inp_width, inp_height = meta['inp_width'], meta['inp_height']
-    out_width, out_height = meta['out_width'], meta['out_height']
-    input_hm = np.zeros((1, inp_height, inp_width), dtype=np.float32)
-    output_inds = []
-    for det in dets:
-      if det['score'] < self.opt.pre_thresh:
-        continue
-      bbox = self._trans_bbox(det['bbox'], trans_input, inp_width, inp_height)
-      bbox_out = self._trans_bbox(
-        det['bbox'], trans_output, out_width, out_height)
-      h, w = bbox[3] - bbox[1], bbox[2] - bbox[0]
-      if (h > 0 and w > 0):
-        radius = gaussian_radius((math.ceil(h), math.ceil(w)))
-        radius = max(0, int(radius))
-        ct = np.array(
-          [(bbox[0] + bbox[2]) / 2, (bbox[1] + bbox[3]) / 2], dtype=np.float32)
-        ct_int = ct.astype(np.int32)
-        if with_hm:
-          draw_umich_gaussian(input_hm[0], ct_int, radius)
-        ct_out = np.array(
-          [(bbox_out[0] + bbox_out[2]) / 2,
-           (bbox_out[1] + bbox_out[3]) / 2], dtype=np.int32)
-        output_inds.append(ct_out[1] * out_width + ct_out[0])
-    if with_hm:
-      input_hm = input_hm[np.newaxis]
-      if self.opt.flip_test:
-        input_hm = np.concatenate((input_hm, input_hm[:, :, :, ::-1]), axis=0)
-      input_hm = torch.from_numpy(input_hm).to(self.opt.device)
-    output_inds = np.array(output_inds, np.int64).reshape(1, -1)
-    return input_hm
-
-
-
   def process(self, images, pre_images=None, pre_hms=None, return_time=False):
     with torch.no_grad():
       torch.cuda.synchronize()
@@ -489,7 +443,7 @@ class Detector(object):
 
           debugger.add_coco_bbox(
             item['bbox'], item['class'] - 1, sc, img_id='generic')
-          if pred_mask in item:
+          if 'pred_mask' in item:
             mask = mask_utils.decode(item['pred_mask'])
             debugger.add_coco_seg(mask, item['tracking_id'], img_id='generic', conf=sc)
         # if 'tracking' in item:

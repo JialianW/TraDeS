@@ -3,9 +3,7 @@
 [comment]: <> (> [**Track to Detect and Segment: An Online Multi-Object Tracker**]&#40;http://arxiv.org/abs/2004.01177&#41;,            )
 [**Track to Detect and Segment: An Online Multi-Object Tracker**](https://arxiv.org/abs/2103.08808)  
 Jialian Wu, Jiale Cao, Liangchen Song, Yu Wang, Ming Yang, Junsong Yuan        
-In CVPR, 2021. [[Paper]](https://arxiv.org/pdf/2103.08808.pdf) [[Project Page]](https://jialianwu.com/projects/TraDeS.html) [Demo [(YouTube)](https://www.youtube.com/watch?v=oGNtSFHRZJAl) [(bilibili)](https://www.bilibili.com/video/BV12U4y1p7wg)]
-
-Many thanks to [CenterTrack](https://github.com/xingyizhou/CenterTrack) authors for their great framework!
+In CVPR, 2021. [[Paper]](https://openaccess.thecvf.com/content/CVPR2021/papers/Wu_Track_To_Detect_and_Segment_An_Online_Multi-Object_Tracker_CVPR_2021_paper.pdf) [[Project Page]](https://jialianwu.com/projects/TraDeS.html) [Demo [(YouTube)](https://www.youtube.com/watch?v=oGNtSFHRZJAl) [(bilibili)](https://www.bilibili.com/video/BV12U4y1p7wg)]
 
 <p align="left"> <img src='https://github.com/JialianW/homepage/blob/master/images/TraDeS_demo.gif?raw=true' align="center" width="400px">
 
@@ -104,3 +102,6 @@ If you find it useful in your research, please consider citing our paper as foll
     author={Wu, Jialian and Cao, Jiale and Song, Liangchen and Wang, Yu and Yang, Ming and Yuan, Junsong},
     booktitle={IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
     year={2021}}
+
+## Acknowledgment
+Many thanks to [CenterTrack](https://github.com/xingyizhou/CenterTrack) authors for their great framework!

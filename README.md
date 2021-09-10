@@ -9,8 +9,10 @@ In CVPR, 2021. [[Paper]](https://openaccess.thecvf.com/content/CVPR2021/papers/W
 
 ## News
 
-According to the [MvMHAT](https://www.researchgate.net/profile/Ruize-Han/publication/353819964_Self-supervised_Multi-view_Multi-Human_Association_and_Tracking/links/611356961ca20f6f8613727d/Self-supervised-Multi-view-Multi-Human-Association-and-Tracking.pdf) paper,
- TraDeS also performs well on multi-view persons tracking. Thanks for the authors' work.
+* As reported in the [OVIS](https://openreview.net/forum?id=IfzTefIU_3j) paper, TraDeS achieves competitive performance on Occluded Video Instance Segmentation (12.0 AP on OVIS test set).
+* As reported in the [MvMHAT](https://www.researchgate.net/profile/Ruize-Han/publication/353819964_Self-supervised_Multi-view_Multi-Human_Association_and_Tracking/links/611356961ca20f6f8613727d/Self-supervised-Multi-view-Multi-Human-Association-and-Tracking.pdf) paper,
+  TraDeS also performs well on Multi-view Persons Tracking.
+* TraDeS has been applied to 6 datasets across 4 tasks through our or third-parties' implementations.
 
 ## Installation
 
